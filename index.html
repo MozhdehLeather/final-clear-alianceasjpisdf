@@ -1,0 +1,2098 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aslani Handyman Service | Home</title>
+    <script src="https://unpkg.com/gsap@3.9.0/dist/gsap.min.js"></script>
+    <script src="https://unpkg.com/gsap@3.9.0/dist/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        :root {
+            --bg: #ffffff;
+            --surface: #f8f9fa;
+            --border: #e8e8e8;
+            --text: #1a1a1a;
+            --text-light: #666666;
+            --accent: #111111;
+            --accent-glow: rgba(17, 17, 17, 0.1);
+            --radius: 12px;
+            --radius-sm: 6px;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-hover: 0 8px 30px rgba(0, 0, 0, 0.12);
+            
+            /* Typography */
+            --font-heading: 'Space Grotesk', sans-serif;
+            --font-body: 'Inter', sans-serif;
+            --text-xs: 0.75rem;
+            --text-sm: 0.875rem;
+            --text-base: 1rem;
+            --text-lg: 1.125rem;
+            --text-xl: 1.25rem;
+            --text-2xl: 1.5rem;
+            --text-3xl: 1.875rem;
+            --text-4xl: 2.25rem;
+            --text-5xl: 3rem;
+
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-body);
+            color: var(--text);
+            background: var(--bg);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Loading Screen - Story Animation */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: var(--bg);
+            overflow: hidden;
+        }
+
+        .loading-story {
+            position: relative;
+            width: 100%;
+            height: 300px;
+            max-width: 800px;
+            margin-bottom: 3rem;
+        }
+
+        .construction-site {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            height: 200px;
+        }
+
+        .house-frame {
+            position: absolute;
+            bottom: 40px;
+            left: 100px;
+            width: 200px;
+            height: 120px;
+            border: 2px solid var(--bg);
+            opacity: 0.3;
+        }
+
+        .hammer {
+            position: absolute;
+            bottom: 60px;
+            right: 150px;
+            width: 40px;
+            height: 40px;
+            background: var(--bg);
+            border-radius: 4px;
+            animation: hammerSwing 1s ease-in-out infinite;
+            transform-origin: top center;
+        }
+
+        .hammer::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            left: 15px;
+            width: 10px;
+            height: 20px;
+            background: var(--bg);
+        }
+
+        .screwdriver {
+            position: absolute;
+            bottom: 50px;
+            right: 100px;
+            width: 30px;
+            height: 60px;
+            background: var(--bg);
+            border-radius: 4px;
+            animation: screwTurn 2s linear infinite;
+        }
+
+        .screwdriver::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 10px;
+            width: 10px;
+            height: 15px;
+            background: var(--bg);
+            border-radius: 2px;
+        }
+
+        .wrench {
+            position: absolute;
+            bottom: 40px;
+            left: 150px;
+            width: 40px;
+            height: 10px;
+            background: var(--bg);
+            border-radius: 2px;
+            animation: wrenchTurn 1.5s ease-in-out infinite;
+        }
+
+        .wrench::before {
+            content: '';
+            position: absolute;
+            left: -15px;
+            top: 3px;
+            width: 15px;
+            height: 4px;
+            background: var(--bg);
+            transform: rotate(45deg);
+        }
+
+        .tool-progress {
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: var(--text-lg);
+            color: var(--bg);
+            font-family: var(--font-heading);
+            font-weight: 600;
+            text-align: center;
+            width: 100%;
+        }
+
+        .progress-text {
+            font-size: var(--text-sm);
+            color: rgba(255, 255, 255, 0.7);
+            margin-top: 0.5rem;
+            max-width: 400px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .loading-progress {
+            width: 300px;
+            margin-top: 2rem;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: var(--bg);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1rem;
+            font-size: var(--text-xs);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .step {
+            text-align: center;
+            opacity: 0.3;
+            transition: opacity 0.3s ease;
+        }
+
+        .step.active {
+            opacity: 1;
+            color: var(--bg);
+        }
+
+        @keyframes hammerSwing {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-30deg); }
+            50% { transform: rotate(0deg); }
+            75% { transform: rotate(30deg); }
+        }
+
+        @keyframes screwTurn {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes wrenchTurn {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(45deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        /* Header */
+        header {
+            background: var(--bg);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+            border-bottom: 1px solid var(--border);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            color: var(--accent);
+            font-size: 1.8rem;
+        }
+
+        .logo-text {
+            font-family: var(--font-heading);
+            font-size: 1.3rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            color: var(--accent);
+        }
+
+        /* Desktop Navigation */
+        .desktop-nav {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            font-size: var(--text-sm);
+            letter-spacing: 0.3px;
+            padding: 0.5rem 0;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-cta {
+            background: var(--accent);
+            color: var(--bg) !important;
+            padding: 0.8rem 1.8rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            transition: var(--transition);
+        }
+
+        .nav-cta:hover {
+            background: var(--text);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nav-cta::after {
+            display: none;
+        }
+
+        /* Mobile Navigation */
+        .mobile-nav-btn {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .mobile-nav-btn:hover {
+            background: var(--surface);
+        }
+
+        .hamburger {
+            display: block;
+            position: relative;
+            width: 20px;
+            height: 2px;
+            background: var(--text);
+            margin: 0 auto;
+            transition: var(--transition);
+        }
+
+        .hamburger::before,
+        .hamburger::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background: var(--text);
+            transition: var(--transition);
+        }
+
+        .hamburger::before {
+            top: -6px;
+        }
+
+        .hamburger::after {
+            bottom: -6px;
+        }
+
+        .mobile-nav-btn.active .hamburger {
+            background: transparent;
+        }
+
+        .mobile-nav-btn.active .hamburger::before {
+            transform: rotate(45deg) translate(4px, 4px);
+        }
+
+        .mobile-nav-btn.active .hamburger::after {
+            transform: rotate(-45deg) translate(4px, -4px);
+        }
+
+        .mobile-nav {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 320px;
+            height: 100vh;
+            background: var(--bg);
+            z-index: 1000;
+            padding: 5rem 2rem 2rem;
+            transition: right 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            box-shadow: -10px 0 30px rgba(0, 0, 0, 0.1);
+            border-left: 1px solid var(--border);
+        }
+
+        .mobile-nav.active {
+            right: 0;
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .mobile-nav-link {
+            text-decoration: none;
+            color: var(--text);
+            font-size: var(--text-base);
+            font-weight: 500;
+            padding: 1rem;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+        }
+
+        .mobile-nav-link:hover {
+            background: var(--surface);
+            color: var(--accent);
+        }
+
+        .mobile-nav-contact {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .mobile-nav-contact a {
+            display: block;
+            background: var(--accent);
+            color: var(--bg);
+            text-decoration: none;
+            text-align: center;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .mobile-nav-contact a:hover {
+            background: var(--text);
+            transform: translateY(-2px);
+        }
+
+        /* Main Content */
+        main {
+            margin-top: 80px;
+        }
+
+        section {
+            padding: 6rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 90vh;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: var(--surface);
+            color: var(--text);
+            padding: 0.8rem 1.8rem;
+            border-radius: 50px;
+            font-size: var(--text-sm);
+            font-weight: 600;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border);
+        }
+
+        .hero h1 {
+            font-family: var(--font-heading);
+            font-size: var(--text-5xl);
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            color: var(--accent);
+        }
+
+        .hero h1 span {
+            position: relative;
+            display: inline-block;
+        }
+
+        .hero h1 span::after {
+            content: '';
+            position: absolute;
+            bottom: 5px;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: var(--accent-glow);
+            z-index: -1;
+        }
+
+        .hero p {
+            font-size: var(--text-xl);
+            color: var(--text-light);
+            margin-bottom: 2.5rem;
+            max-width: 500px;
+            line-height: 1.8;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: var(--radius-sm);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: var(--text-base);
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn i {
+            font-size: 1.1rem;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .btn-primary:hover {
+            background: var(--text);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .btn-secondary {
+            background: var(--surface);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: var(--bg);
+            transform: translateY(-3px);
+            border-color: var(--accent);
+        }
+
+        .hero-features {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .feature-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--surface);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-size: 1.2rem;
+            border: 1px solid var(--border);
+        }
+
+        .feature-text {
+            font-size: var(--text-sm);
+            font-weight: 500;
+        }
+
+        /* Hero Image */
+        .hero-image {
+            position: relative;
+            border-radius: var(--radius);
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+            height: 500px;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-glow);
+            z-index: 1;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--surface) 0%, var(--border) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .image-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23111111' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        }
+
+        .image-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            color: var(--text);
+            padding: 2rem;
+        }
+
+        .image-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            opacity: 0.8;
+        }
+
+        .image-text {
+            font-size: var(--text-xl);
+            font-weight: 600;
+            letter-spacing: 1px;
+            font-family: var(--font-heading);
+        }
+
+        .image-subtext {
+            margin-top: 1rem;
+            font-size: var(--text-sm);
+            color: var(--text-light);
+            max-width: 300px;
+        }
+
+        /* Services */
+        .services {
+            background: var(--surface);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-family: var(--font-heading);
+            font-size: var(--text-4xl);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            position: relative;
+            display: inline-block;
+            color: var(--accent);
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 4px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .section-subtitle {
+            color: var(--text-light);
+            font-size: var(--text-lg);
+            max-width: 600px;
+            margin: 2rem auto 0;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .service-card {
+            background: var(--bg);
+            border-radius: var(--radius);
+            padding: 3rem 2rem;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+        }
+
+        .service-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--accent);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+            transform-origin: left;
+        }
+
+        .service-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .service-card h3 {
+            font-family: var(--font-heading);
+            font-size: var(--text-xl);
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--accent);
+        }
+
+        .service-card p {
+            color: var(--text-light);
+            font-size: var(--text-base);
+            margin-bottom: 1.5rem;
+            line-height: 1.7;
+        }
+
+        .service-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: gap 0.3s ease;
+            font-size: var(--text-sm);
+        }
+
+        .service-link:hover {
+            gap: 1rem;
+        }
+
+        /* Stats */
+        .stats {
+            background: var(--accent);
+            color: var(--bg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-glow);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 3rem;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-item {
+            padding: 2rem;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--bg);
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .stat-item h3 {
+            font-family: var(--font-heading);
+            font-size: var(--text-4xl);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: var(--bg);
+        }
+
+        .stat-item p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: var(--text-sm);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 500;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            background: var(--bg);
+        }
+
+        .testimonial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+
+        .testimonial-card {
+            background: var(--bg);
+            padding: 3rem 2rem;
+            border-radius: var(--radius);
+            position: relative;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--accent);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--surface);
+            font-family: Georgia, serif;
+            line-height: 1;
+        }
+
+        .testimonial-content {
+            font-size: var(--text-base);
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            font-style: italic;
+            padding-top: 1rem;
+            color: var(--text);
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            background: var(--surface);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: var(--text-lg);
+            border: 1px solid var(--border);
+        }
+
+        .author-info h4 {
+            font-family: var(--font-heading);
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+            color: var(--accent);
+        }
+
+        .author-rating {
+            color: var(--accent);
+            font-size: var(--text-sm);
+            letter-spacing: 2px;
+        }
+
+        .author-title {
+            color: var(--text-light);
+            font-size: var(--text-sm);
+        }
+
+        /* FAQ */
+        .faq {
+            background: var(--surface);
+        }
+
+        .faq-grid {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            margin-bottom: 1rem;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            background: var(--bg);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+        }
+
+        .faq-question {
+            padding: 1.5rem 2rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            transition: var(--transition);
+            position: relative;
+            background: var(--bg);
+        }
+
+        .faq-question:hover {
+            background: var(--surface);
+        }
+
+        .faq-question.active {
+            background: var(--accent);
+            color: var(--bg);
+        }
+
+        .faq-icon {
+            color: var(--accent);
+            transition: transform 0.3s ease;
+            font-size: var(--text-lg);
+        }
+
+        .faq-question.active .faq-icon {
+            color: var(--bg);
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            padding: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border-top: 1px solid transparent;
+        }
+
+        .faq-answer.active {
+            padding: 2rem;
+            max-height: 500px;
+            border-top: 1px solid var(--border);
+        }
+
+        .faq-answer p {
+            color: var(--text-light);
+            line-height: 1.7;
+            font-size: var(--text-base);
+        }
+
+        /* CTA */
+        .cta {
+            background: var(--accent);
+            color: var(--bg);
+            text-align: center;
+            padding: 8rem 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-glow);
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .cta h2 {
+            font-family: var(--font-heading);
+            font-size: var(--text-4xl);
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            line-height: 1.1;
+        }
+
+        .cta p {
+            font-size: var(--text-xl);
+            margin-bottom: 3rem;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--accent);
+            color: var(--bg);
+            padding: 5rem 2rem 2rem;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .footer-section h3 {
+            font-family: var(--font-heading);
+            font-size: var(--text-xl);
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--bg);
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-section h3::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--bg);
+        }
+
+        .footer-section p, .footer-section a {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: var(--text-base);
+            text-decoration: none;
+            line-height: 1.8;
+            transition: var(--transition);
+        }
+
+        .footer-section a:hover {
+            color: var(--bg);
+            transform: translateX(5px);
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-section li i {
+            color: var(--bg);
+            font-size: var(--text-sm);
+        }
+
+        .footer-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .contact-link i {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--bg);
+            font-size: var(--text-lg);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .social-links a {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+            color: var(--bg);
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            max-width: 1400px;
+            margin: 4rem auto 0;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: var(--text-sm);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .hero {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: var(--text-4xl);
+            }
+
+            .hero-features {
+                justify-content: center;
+            }
+
+            .hero-image {
+                height: 400px;
+                max-width: 600px;
+                margin: 0 auto;
+                order: -1;
+            }
+
+            .hero-content {
+                order: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .desktop-nav {
+                display: none;
+            }
+
+            .mobile-nav-btn {
+                display: block;
+            }
+
+            .header-container {
+                padding: 0 1rem;
+            }
+
+            section {
+                padding: 4rem 1rem;
+            }
+
+            .hero h1 {
+                font-size: var(--text-3xl);
+            }
+
+            .hero-buttons, .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+
+            .section-title {
+                font-size: var(--text-3xl);
+            }
+
+            .cta h2 {
+                font-size: var(--text-3xl);
+            }
+
+            .services-grid,
+            .testimonial-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .mobile-nav {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .construction-site {
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: var(--text-2xl);
+            }
+
+            .hero p {
+                font-size: var(--text-base);
+            }
+
+            .hero-image {
+                height: 300px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stat-item h3 {
+                font-size: var(--text-3xl);
+            }
+
+            .cta h2 {
+                font-size: var(--text-2xl);
+            }
+
+            .cta p {
+                font-size: var(--text-base);
+            }
+
+            .construction-site {
+                transform: translate(-50%, -50%) scale(0.6);
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen - Construction Story -->
+    <div id="loading-screen">
+        <div class="loading-story">
+            <div class="tool-progress" id="toolProgress">Preparing Tools...</div>
+            <div class="construction-site">
+                <div class="house-frame"></div>
+                <div class="hammer"></div>
+                <div class="screwdriver"></div>
+                <div class="wrench"></div>
+            </div>
+            <div class="progress-text" id="progressText">
+                Building your perfect handyman experience...
+            </div>
+        </div>
+        
+        <div class="loading-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="step" id="step1">Tools Ready</div>
+                <div class="step" id="step2">Blueprint Set</div>
+                <div class="step" id="step3">Building Site</div>
+                <div class="step" id="step4">Quality Check</div>
+                <div class="step" id="step5">Ready to Serve</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-tools logo-icon"></i>
+                <div class="logo-text">ASLANI HANDYMAN</div>
+            </a>
+            
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="about.html" class="nav-link">About</a>
+                <a href="services.html" class="nav-link">Services</a>
+                <a href="gallery.html" class="nav-link">Gallery</a>
+                <a href="consultation.html" class="nav-link">Consultation</a>
+                <a href="contact.html" class="nav-link">Contact</a>
+                <a href="consultation.html" class="nav-link nav-cta">Free Estimate</a>
+            </nav>
+
+            <!-- Mobile Navigation Button -->
+            <button class="mobile-nav-btn" id="mobileNavBtn">
+                <span class="hamburger"></span>
+            </button>
+        </div>
+
+        <!-- Mobile Navigation Menu -->
+        <div class="mobile-nav" id="mobileNav">
+            <div class="mobile-nav-links">
+                <a href="index.html" class="mobile-nav-link">Home</a>
+                <a href="about.html" class="mobile-nav-link">About</a>
+                <a href="services.html" class="mobile-nav-link">Services</a>
+                <a href="gallery.html" class="mobile-nav-link">Gallery</a>
+                <a href="consultation.html" class="mobile-nav-link">Consultation</a>
+                <a href="contact.html" class="mobile-nav-link">Contact</a>
+                <div class="mobile-nav-contact">
+                    <a href="tel:+14696570977">
+                        <i class="fas fa-phone"></i> Call Now: (469) 657-0977
+                    </a>
+                    <a href="consultation.html">
+                        <i class="fas fa-calendar-check"></i> Get Free Estimate
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <span class="hero-badge">
+                    <i class="fas fa-star"></i> 5.0 Rated Service
+                </span>
+                <h1>Expert Handyman Services <span>You Can Trust</span></h1>
+                <p>Professional, reliable handyman services in the Greater Dallas Area. From plumbing repairs to furniture assembly, we handle it all with precision and care.</p>
+                
+                <div class="hero-buttons">
+                    <a href="contact.html" class="btn btn-primary">
+                        <i class="fas fa-calendar-alt"></i> Get Free Estimate
+                    </a>
+                    <a href="tel:+14696570977" class="btn btn-secondary">
+                        <i class="fas fa-phone"></i> Call Now
+                    </a>
+                </div>
+                
+                <div class="hero-features">
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="feature-text">24/7 Emergency Service</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="feature-text">Work Warranty</div>
+                    </div>
+                    <div class="feature-item">
+                        <div class="feature-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="feature-text">No Hidden Fees</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero-image">
+                <div class="image-placeholder">
+                    <div class="image-overlay"></div>
+                    <div class="image-content">
+                        <i class="fas fa-home image-icon"></i>
+                        <div class="image-text">Professional Handyman Services</div>
+                        <div class="image-subtext">
+                            Quality repairs, installations, and maintenance for your home
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Services Preview -->
+        <section class="services">
+            <div class="section-header">
+                <h2 class="section-title">Our Services</h2>
+                <p class="section-subtitle">Professional solutions for every home need. We handle everything from simple repairs to complex installations.</p>
+            </div>
+            
+            <div class="services-grid">
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-faucet"></i>
+                    </div>
+                    <h3>Plumbing Services</h3>
+                    <p>Expert repair, replacement, and installation of sinks, toilets, kitchen plumbing, and all plumbing fixtures. Emergency leak repairs available 24/7.</p>
+                    <a href="services.html#plumbing" class="service-link">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-door-closed"></i>
+                    </div>
+                    <h3>Door & Lock Repairs</h3>
+                    <p>Professional repair and replacement of all door types, locks, hinges, and hardware. Security upgrades and smart lock installation available.</p>
+                    <a href="services.html#doors" class="service-link">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-blender"></i>
+                    </div>
+                    <h3>Appliance Installation</h3>
+                    <p>Safe installation of refrigerators, ovens, microwaves, dishwashers, washers, and dryers. Gas line connections and electrical setup included.</p>
+                    <a href="services.html#appliances" class="service-link">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+
+                <div class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-couch"></i>
+                    </div>
+                    <h3>Furniture Assembly</h3>
+                    <p>Professional assembly of all furniture types including beds, desks, wardrobes, and entertainment centers. Precise, damage-free installation.</p>
+                    <a href="services.html#furniture" class="service-link">
+                        Learn More <i class="fas fa-arrow-right"></i>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="stats">
+            <div class="stats-grid">
+                <div class="stat-item fade-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3>100+</h3>
+                    <p>Services Offered</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <h3>5.0</h3>
+                    <p>Customer Rating</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3>24/7</h3>
+                    <p>Emergency Service</p>
+                </div>
+                <div class="stat-item fade-in">
+                    <div class="stat-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <h3>0</h3>
+                    <p>Hidden Fees</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials -->
+        <section class="testimonials">
+            <div class="section-header">
+                <h2 class="section-title">What Our Clients Say</h2>
+                <p class="section-subtitle">Trusted by homeowners across the Greater Dallas Area</p>
+            </div>
+            
+            <div class="testimonial-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-content">
+                        "Aslani Handyman Service saved my kitchen renovation. The plumbing work was impeccable and they finished ahead of schedule! Professional, clean, and reasonably priced."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">SJ</div>
+                        <div class="author-info">
+                            <h4>Sarah Johnson</h4>
+                            <div class="author-rating">
+                                ★★★★★
+                            </div>
+                            <div class="author-title">McKinney, TX</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-content">
+                        "Professional, on-time, and excellent workmanship. They assembled my entire bedroom set perfectly. Highly recommend! Will definitely use them again for future projects."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">MC</div>
+                        <div class="author-info">
+                            <h4>Michael Chen</h4>
+                            <div class="author-rating">
+                                ★★★★★
+                            </div>
+                            <div class="author-title">Frisco, TX</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-content">
+                        "Emergency plumbing repair at 9 PM on a Sunday! These guys are lifesavers. Fair pricing and top-notch service. Couldn't ask for better emergency service."
+                    </div>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RW</div>
+                        <div class="author-info">
+                            <h4>Robert Williams</h4>
+                            <div class="author-rating">
+                                ★★★★★
+                            </div>
+                            <div class="author-title">Plano, TX</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="faq">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Find answers to common questions about our services</p>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <span>How is Aslani Handyman Service rated?</span>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Aslani Handyman Service is currently rated 5.0 overall out of 5 stars by our satisfied customers. We consistently receive perfect ratings for reliability, quality work, and customer service.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <span>What are your business hours?</span>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We're open 7 days a week, from 7 AM to 10 PM, to serve your needs whenever they arise. For emergencies, we offer 24/7 service with no additional charges.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <span>Do you offer free estimates?</span>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we offer free, no-obligation project estimates. Contact us for a detailed quote with transparent pricing and no hidden fees.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <span>Do you offer emergency services?</span>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, we offer 24/7 emergency services for urgent repairs like plumbing leaks, electrical issues, and security concerns. No extra charges for after-hours emergencies.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <span>Are warranties offered on your work?</span>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Yes, all our work comes with a comprehensive warranty for your peace of mind. We stand behind the quality of our craftsmanship and materials.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item fade-in">
+                    <div class="faq-question">
+                        <span>What payment methods do you accept?</span>
+                        <i class="fas fa-plus faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>We accept all major credit cards, cash, Zelle, Venmo, Cash App, and PayPal for your convenience. Payment is due upon completion of satisfactory work.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta">
+            <div class="cta-content">
+                <h2>Ready for Professional Service?</h2>
+                <p>Contact us today for a free consultation and estimate. We're here to help with all your home repair and maintenance needs with quality you can trust.</p>
+                <div class="cta-buttons">
+                    <a href="tel:+14696570977" class="btn btn-primary">
+                        <i class="fas fa-phone"></i> Call Now: (469) 657-0977
+                    </a>
+                    <a href="contact.html" class="btn btn-secondary">
+                        <i class="fas fa-envelope"></i> Send Message
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-section">
+                <h3>Aslani Handyman</h3>
+                <p>Professional, reliable handyman services in the Greater Dallas Area. Expert repairs, installations, and assembly with quality you can trust.</p>
+                <div class="social-links">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" aria-label="Yelp"><i class="fab fa-yelp"></i></a>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="about.html"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="services.html"><i class="fas fa-chevron-right"></i> Our Services</a></li>
+                    <li><a href="gallery.html"><i class="fas fa-chevron-right"></i> Gallery</a></li>
+                    <li><a href="consultation.html"><i class="fas fa-chevron-right"></i> Free Consultation</a></li>
+                    <li><a href="contact.html"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-section">
+                <h3>Contact Info</h3>
+                <div class="footer-contact">
+                    <a href="tel:+14696570977" class="contact-link">
+                        <i class="fas fa-phone"></i>
+                        <div>
+                            <strong>Phone:</strong><br>
+                            (469) 657-0977
+                        </div>
+                    </a>
+                    <a href="mailto:handymanaslani@gmail.com" class="contact-link">
+                        <i class="fas fa-envelope"></i>
+                        <div>
+                            <strong>Email:</strong><br>
+                            handymanaslani@gmail.com
+                        </div>
+                    </a>
+                    <div class="contact-link">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Location:</strong><br>
+                            McKinney, TX 75071
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-section">
+                <h3>Service Area</h3>
+                <p>Serving the Greater Dallas Area:</p>
+                <ul>
+                    <li><i class="fas fa-map-pin"></i> McKinney</li>
+                    <li><i class="fas fa-map-pin"></i> Frisco</li>
+                    <li><i class="fas fa-map-pin"></i> Plano</li>
+                    <li><i class="fas fa-map-pin"></i> Dallas</li>
+                    <li><i class="fas fa-map-pin"></i> Grapevine</li>
+                    <li><i class="fas fa-map-pin"></i> Fort Worth</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>&copy; 2023 Aslani Handyman Service. All rights reserved.</div>
+            <div>Expert Handyman Services You Can Trust</div>
+        </div>
+    </footer>
+
+    <script>
+        // Register GSAP plugins
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Enhanced Loading Animation with Construction Story
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loading-screen');
+            const progressFill = document.getElementById('progressFill');
+            const progressText = document.getElementById('progressText');
+            const toolProgress = document.getElementById('toolProgress');
+            const steps = document.querySelectorAll('.step');
+            
+            // Construction story messages
+            const constructionMessages = [
+                "Preparing our professional tools...",
+                "Setting up the blueprint for your perfect service...",
+                "Building the foundation of trust and reliability...",
+                "Quality checking every detail for perfection...",
+                "Ready to serve with expert craftsmanship!"
+            ];
+            
+            // Tool animations
+            const hammer = document.querySelector('.hammer');
+            const screwdriver = document.querySelector('.screwdriver');
+            const wrench = document.querySelector('.wrench');
+            const houseFrame = document.querySelector('.house-frame');
+            
+            let progress = 0;
+            let currentStep = 0;
+            
+            // Animate construction tools
+            gsap.to(hammer, {
+                rotation: -30,
+                duration: 0.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+            });
+            
+            gsap.to(screwdriver, {
+                rotation: 360,
+                duration: 2,
+                repeat: -1,
+                ease: "none"
+            });
+            
+            gsap.to(wrench, {
+                rotation: 45,
+                duration: 1.5,
+                repeat: -1,
+                yoyo: true,
+                ease: "power1.inOut"
+            });
+            
+            // Progress animation with story
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 10 + 5;
+                if (progress > 100) progress = 100;
+                
+                progressFill.style.width = progress + "%";
+                
+                // Update steps based on progress
+                const stepIndex = Math.floor(progress / 20);
+                if (stepIndex > currentStep) {
+                    currentStep = stepIndex;
+                    toolProgress.textContent = constructionMessages[stepIndex - 1] || "Final preparations...";
+                    progressText.textContent = constructionMessages[stepIndex] || constructionMessages[4];
+                    
+                    // Activate step
+                    steps.forEach((step, index) => {
+                        if (index < stepIndex) {
+                            step.classList.add('active');
+                        } else {
+                            step.classList.remove('active');
+                        }
+                    });
+                    
+                    // Animate house frame appearing
+                    if (stepIndex >= 3) {
+                        gsap.to(houseFrame, {
+                            opacity: 0.6,
+                            duration: 1,
+                            ease: "power2.out"
+                        });
+                    }
+                    
+                    // Add tool animations based on progress
+                    switch(stepIndex) {
+                        case 1:
+                            gsap.to(hammer, { scale: 1.2, duration: 0.3, yoyo: true, repeat: 1 });
+                            break;
+                        case 2:
+                            gsap.to(screwdriver, { y: -10, duration: 0.5, yoyo: true, repeat: 1 });
+                            break;
+                        case 3:
+                            gsap.to(wrench, { scale: 1.2, duration: 0.3, yoyo: true, repeat: 1 });
+                            break;
+                        case 4:
+                            // Make house more visible
+                            gsap.to(houseFrame, {
+                                borderWidth: "3px",
+                                duration: 1,
+                                ease: "power2.out"
+                            });
+                            break;
+                    }
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    
+                    // Final animation sequence
+                    setTimeout(() => {
+                        // Animate completion
+                        gsap.to([hammer, screwdriver, wrench], {
+                            scale: 1.5,
+                            opacity: 0,
+                            duration: 0.5,
+                            stagger: 0.1
+                        });
+                        
+                        gsap.to(houseFrame, {
+                            scale: 1.2,
+                            opacity: 1,
+                            borderColor: "#ffffff",
+                            duration: 0.8,
+                            ease: "power2.out"
+                        });
+                        
+                        // Update final text
+                        toolProgress.textContent = "Ready to Build!";
+                        progressText.textContent = "Your handyman service is now ready...";
+                        
+                        // Complete loading
+                        setTimeout(() => {
+                            gsap.to(loadingScreen, {
+                                opacity: 0,
+                                duration: 0.8,
+                                ease: "power2.inOut",
+                                onComplete: () => {
+                                    loadingScreen.style.display = "none";
+                                    animatePage();
+                                }
+                            });
+                        }, 1000);
+                    }, 500);
+                }
+            }, 150);
+            
+            function animatePage() {
+                // Animate hero content
+                gsap.from('.hero-content', {
+                    opacity: 0,
+                    y: 50,
+                    duration: 1.2,
+                    ease: "power3.out"
+                });
+                
+                gsap.from('.hero-image', {
+                    opacity: 0,
+                    scale: 0.9,
+                    duration: 1.2,
+                    delay: 0.3,
+                    ease: "power3.out"
+                });
+                
+                // Scroll animations
+                const fadeElements = document.querySelectorAll('.fade-in');
+                
+                fadeElements.forEach(el => {
+                    gsap.set(el, { 
+                        y: 40,
+                        opacity: 0 
+                    });
+                    
+                    ScrollTrigger.create({
+                        trigger: el,
+                        start: "top 85%",
+                        onEnter: () => {
+                            gsap.to(el, {
+                                opacity: 1,
+                                y: 0,
+                                duration: 0.8,
+                                ease: "power2.out"
+                            });
+                        }
+                    });
+                });
+                
+                // Add hover animations to service cards
+                const serviceCards = document.querySelectorAll('.service-card');
+                serviceCards.forEach(card => {
+                    card.addEventListener('mouseenter', () => {
+                        gsap.to(card, {
+                            y: -5,
+                            duration: 0.3,
+                            ease: "power2.out"
+                        });
+                    });
+                    
+                    card.addEventListener('mouseleave', () => {
+                        gsap.to(card, {
+                            y: 0,
+                            duration: 0.3,
+                            ease: "power2.out"
+                        });
+                    });
+                });
+                
+                // Animate stats numbers
+                const statNumbers = document.querySelectorAll('.stat-item h3');
+                statNumbers.forEach(number => {
+                    const target = number.textContent;
+                    gsap.to(number, {
+                        innerText: target,
+                        duration: 2,
+                        snap: { innerText: 1 },
+                        scrollTrigger: {
+                            trigger: number,
+                            start: "top 80%",
+                            onEnter: () => {
+                                let value = 0;
+                                const increment = parseInt(target) / 100;
+                                
+                                const timer = setInterval(() => {
+                                    value += increment;
+                                    if (value >= parseInt(target)) {
+                                        value = parseInt(target);
+                                        clearInterval(timer);
+                                    }
+                                    number.textContent = Math.floor(value);
+                                }, 20);
+                            }
+                        }
+                    });
+                });
+            }
+            
+            // Mobile Navigation
+            const mobileNavBtn = document.getElementById('mobileNavBtn');
+            const mobileNav = document.getElementById('mobileNav');
+            
+            mobileNavBtn.addEventListener('click', () => {
+                mobileNavBtn.classList.toggle('active');
+                mobileNav.classList.toggle('active');
+                
+                // Prevent body scroll when menu is open
+                if (mobileNav.classList.contains('active')) {
+                    document.body.style.overflow = 'hidden';
+                    gsap.fromTo(mobileNav, 
+                        { x: 100 },
+                        { x: 0, duration: 0.4, ease: "power3.out" }
+                    );
+                } else {
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Close mobile menu when clicking a link
+            mobileNav.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileNavBtn.classList.remove('active');
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = '';
+                });
+            });
+            
+            // Close mobile menu when clicking outside
+            document.addEventListener('click', (e) => {
+                if (mobileNav.classList.contains('active') && 
+                    !mobileNav.contains(e.target) && 
+                    !mobileNavBtn.contains(e.target)) {
+                    mobileNavBtn.classList.remove('active');
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // FAQ Toggle
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isActive = question.classList.contains('active');
+                    
+                    // Close all other FAQ items
+                    faqQuestions.forEach(q => {
+                        q.classList.remove('active');
+                        q.nextElementSibling.classList.remove('active');
+                    });
+                    
+                    // Open clicked item if it wasn't active
+                    if (!isActive) {
+                        question.classList.add('active');
+                        answer.classList.add('active');
+                        
+                        // Add subtle animation
+                        gsap.fromTo(answer,
+                            { height: 0, opacity: 0 },
+                            { height: 'auto', opacity: 1, duration: 0.4, ease: "power2.out" }
+                        );
+                    }
+                });
+            });
+            
+            // Auto-close mobile menu on window resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth > 768) {
+                    mobileNavBtn.classList.remove('active');
+                    mobileNav.classList.remove('active');
+                    document.body.style.overflow = '';
+                }
+            });
+            
+            // Add floating animation to hero image
+            gsap.to('.hero-image', {
+                y: 20,
+                duration: 2,
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut",
+                delay: 2
+            });
+        });
+    </script>
+</body>
+</html>
